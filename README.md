@@ -41,7 +41,7 @@ CoursePlatform — платформа онлайн-курсов, на котор
 - `README.md` — основной файл с описанием проекта.
 - `ASSUMPTIONS.md` — допущения и открытые архитектурные решения.
 - `docs/` — папка с документацией по этапам:
-  - `01-user-stories/` — пользовательские истории.
+  - [01_UserStory/01_UserStoris.md] — пользовательские истории.
   - `02-use-case-diagram/` — диаграмма вариантов использования.
   - `03-c4-architecture/` — C4-модель архитектуры.
   - `04-class-diagram/` — диаграмма классов.
@@ -50,21 +50,7 @@ CoursePlatform — платформа онлайн-курсов, на котор
   - `07-data-model/` — модель данных (ER + SQL).
   - `08-api/` — спецификация API (OpenAPI).
 
-
-## 7. Навигация по этапам
-|#|	Этап|	Файлы|
-|-|-----|--------|
-|1|	User Stories + Acceptance Criteria|	docs/01-user-stories/user-stories.md|
-|2|	Use Case Diagram|	docs/02-use-case-diagram/|
-|3|	C4: Context / Container / Component|	docs/03-c4-architecture/|
-|4|	Class Diagram (доменная модель)|	docs/04-class-diagram/class-diagram.puml|
-|5|	Sequence Diagrams|	docs/05-sequence-diagrams/|
-|6|	Activity Diagram + State Machine|	docs/06-activity-state/|
-|7|	ER-диаграмма + SQL-миграции|	docs/07-data-model/|
-|8| OpenAPI-спецификация|	docs/08-api/openapi.yaml|
-
-
-## 8. Что демонстрирует проект (для рекрутера)
+## 7. Что демонстрирует проект (для рекрутера)
 -	Формализация требований: атомарные User Stories по INVEST с тестируемыми Acceptance Criteria (Given/When/Then), включая негативные сценарии
 -	Сквозная трассируемость: одно и то же бизнес-правило (например, «нельзя получить сертификат при незавершённом курсе») видно на всех уровнях — от AC в User Story, через альтернативный поток Use Case и ветвление в Sequence Diagram, до 400 Bad Request в OpenAPI и CHECK-constraint в SQL
 -	Архитектурное мышление на разных уровнях абстракции: от C4 Context для бизнеса до Component diagram для разработчиков, без противоречий между уровнями
