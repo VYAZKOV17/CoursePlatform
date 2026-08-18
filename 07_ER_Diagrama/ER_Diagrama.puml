@@ -1,0 +1,82 @@
+@startuml
+title "ER Diagram — CoursePlatform"
+
+entity users {
+  * id : UUID <<PK>>
+  --
+  * email : VARCHAR(255) <<UNIQUE>>
+  * password_hash : VARCHAR(255)
+  * first_name : VARCHAR(100)
+  * last_name : VARCHAR(100)
+  * created_at : TIMESTAMPTZ
+}
+
+entity students {
+  * user_id : UUID <<PK, FK>>
+}
+
+entity instructors {
+  * user_id : UUID <<PK, FK>>
+}
+
+entity admins {
+  * user_id : UUID <<PK, FK>>
+}
+
+entity courses {
+  * id : UUID <<PK>>
+  --
+  * instructor_id : UUID <<FK>>
+  * title : VARCHAR(255)
+  description : TEXT
+  * status : course_status
+  * created_at : TIMESTAMPTZ
+}
+
+entity modules {
+  * id : UUID <<PK>>
+  --
+  * course_id : UUID <<FK>>
+  * title : VARCHAR(255)
+  * order_index : INTEGER
+}
+
+entity lessons {
+  * id : UUID <<PK>>
+  --
+  * module_id : UUID <<FK>>
+  * title : VARCHAR(255)
+  content : TEXT
+  * order_index : INTEGER
+}
+
+entity enrollments {
+  * id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK>>
+  * course_id : UUID <<FK>>
+  * status : enrollment_status
+  * progress_percent : SMALLINT
+  * enrolled_at : TIMESTAMPTZ
+}
+
+entity certificates {
+  * id : UUID <<PK>>
+  --
+  * enrollment_id : UUID <<FK, UNIQUE>>
+  * issued_at : TIMESTAMPTZ
+}
+
+users ||--o| students : "is-a"
+users ||--o| instructors : "is-a"
+users ||--o| admins : "is-a"
+
+instructors ||--o{ courses : "создаёт"
+courses ||--|{ modules : "включает"
+modules ||--|{ lessons : "включает"
+
+students ||--o{ enrollments : "записывается"
+courses ||--o{ enrollments : "имеет записи"
+enrollments |o--o| certificates : "выдаётся при завершении"
+
+@enduml
