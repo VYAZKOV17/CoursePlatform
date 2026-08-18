@@ -15,9 +15,10 @@ CoursePlatform — платформа онлайн-курсов, на котор
 ·	Уведомления через внешний Notification Service (SMTP)
 ## 3. Ключевые пользовательские сценарии
 |Сценарий|	Роль|	Артефакты|
+| ------------- | ------------- | ------------- |
 |Создание и публикация курса|	Instructor,Admin|	User Stories, Use Case Diagram|
-Запись на курс	Student	Sequence: Enrollment
-Прохождение курса и получение сертификата	Student	Sequence: Certificate Issuance, State Machine
+|Запись на курс|	Student|	Sequence: Enrollment|
+|Прохождение курса и получение сертификата|	Student|	Sequence: Certificate Issuance, State Machine|
 
 4. Архитектурный обзор
 Архитектура описана по модели C4 на трёх уровнях — от общего контекста до внутренних компонентов API:
