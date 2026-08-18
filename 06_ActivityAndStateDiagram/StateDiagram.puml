@@ -1,0 +1,13 @@
+@startuml
+title "State Machine — Enrollment"
+
+[*] --> Active : студент записался на курс (Enrollment создан)
+
+Active --> Active : студент завершил урок (progressPercent < 100)
+Active --> Completed : progressPercent достиг 100%
+Active --> Dropped : студент отписался от курса
+
+Completed --> [*]
+Dropped --> [*]
+
+@enduml
