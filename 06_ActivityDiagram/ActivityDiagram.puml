@@ -1,0 +1,53 @@
+@startuml
+title "Activity Diagram — Enrollment to Certificate"
+
+|Student|
+start
+:Открывает каталог курсов;
+:Выбирает курс;
+
+|System|
+if (Курс опубликован?) then (да)
+else (нет)
+  :Показывает "Курс недоступен";
+  stop
+endif
+
+|Student|
+:Нажимает "Записаться";
+
+|System|
+if (Уже записан?) then (да)
+  :Показывает "Вы уже записаны";
+  stop
+else (нет)
+  :Создаёт Enrollment (status=active);
+endif
+
+repeat
+  |Student|
+  :Проходит урок;
+  |System|
+  :Обновляет progressPercent;
+repeat while (progressPercent < 100?) is (да)
+->нет;
+
+|System|
+:Переводит Enrollment в статус completed;
+
+|Student|
+:Запрашивает сертификат;
+
+|System|
+if (Сертификат уже выдавался?) then (да)
+  :Возвращает существующий сертификат;
+else (нет)
+  :Создаёт Certificate;
+  :Отправляет уведомление через Notification Service;
+endif
+
+|Student|
+:Скачивает сертификат;
+stop
+
+@enduml
