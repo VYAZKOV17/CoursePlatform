@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: CoursePlatform Lite API
+  version: 1.0.0
+  description: >
+    API платформы курсов — каталог, запись, прогресс, сертификаты, модерация.
+    Спецификация покрывает 5 эндпоинтов, согласованных на Этапе 8
+
+paths:
+  /courses:
+    get:
+      summary: Просмотреть каталог опубликованных курсов
+      operationId: listCourses
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Список опубликованных курсов
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Course'
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalItems:
+                    type: integer
+                  totalPages:
+                    type: integer
+
+  /enrollments:
+    post:
+      summary: Записаться на курс
+      operationId: createEnrollment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [courseId]
+              properties:
+                courseId:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Запись создана успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+        '404':
+          description: Курс не найден или не опубликован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: У студента уже есть активная запись на этот курс
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /enrollments/{id}:
+    get:
+      summary: Получить статус записи и прогресс прохождения курса
+      operationId: getEnrollment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Данные о записи на курс
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+        '403':
+          description: Enrollment принадлежит другому студенту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Enrollment не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /enrollments/{id}/certificate:
+    post:
+      summary: Запросить сертификат о прохождении курса
+      operationId: requestCertificate
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи на курс (Enrollment)
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Сертификат создан впервые
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+        '200':
+          description: Сертификат уже был выдан ранее — возвращается существующий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+        '400':
+          description: Курс не завершён — прогресс меньше 100%
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Enrollment принадлежит другому студенту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Enrollment не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /courses/{id}/review:
+    post:
+      summary: Admin проверяет курс и принимает решение о публикации
+      operationId: reviewCourse
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision:
+                  type: string
+                  enum: [approved, rejected]
+                reason:
+                  type: string
+                  description: Обязательно при decision=rejected
+      responses:
+        '200':
+          description: Решение применено, статус курса обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: decision=rejected без указания reason, либо курс не в статусе pending_review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Пользователь не имеет роли Admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Курс не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        instructorId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [draft, pending_review, published, rejected]
+        createdAt:
+          type: string
+          format: date-time
+
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        studentId:
+          type: string
+          format: uuid
+        courseId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [active, completed, dropped]
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        enrolledAt:
+          type: string
+          format: date-time
+
+    Certificate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        enrollmentId:
+          type: string
+          format: uuid
+        issuedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
