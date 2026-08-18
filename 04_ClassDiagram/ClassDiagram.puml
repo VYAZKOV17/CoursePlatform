@@ -1,0 +1,90 @@
+@startuml
+title "CoursePlatform Lite — Class Diagram"
+
+abstract class User {
+    -id: UUID
+    -email: String
+    -passwordHash: String
+    -lastName: String
+    -firstName: String
+    +login()
+}
+
+class Student extends User {
+    +enroll(): Enrollment
+    +viewProgress(): Progress
+}
+
+class Admin extends User {
+    +reviewCourse(): void
+    +approveCourse(): void
+    +rejectCourse(): void
+}
+
+class Instructor extends User {
+    +createCourse(): void
+}
+
+class Course {
+    -id: UUID
+    -name: String
+    -status: CourseStatus
+    -createdAt: DateTime
+    +publish(): void
+    +reject(): void
+}
+
+enum CourseStatus {
+    DRAFT
+    PENDING_REVIEW
+    PUBLISHED
+    REJECTED
+}
+
+class Module {
+    -id: UUID
+    -name: String
+}
+
+class Lesson {
+    -id: UUID
+    -name: String
+    -content: Text
+}
+
+class Certificate {
+    -id: UUID
+    -name: String
+    -issuedAt: DateTime
+}
+
+class Enrollment {
+    -id: UUID
+    -status: EnrollmentStatus
+    -progressPercent: Integer
+    -enrolledAt: DateTime
+    +completeLesson(): void
+    +certificateDone(): Boolean
+}
+
+enum EnrollmentStatus {
+    ACTIVE
+    COMPLETED
+    DROPPED
+}
+
+Student "1" --|> User
+Instructor "1" --|> User
+Admin "1" --|> User
+
+Instructor "1" --> "0..*" Course : создает
+Course "1" --> "1..*" Module : включает
+Module "1" --> "1..*" Lesson : включает
+
+Course "1" --> "0..*" Enrollment : имеет записи
+Student "1" --> "0..*" Enrollment : записывается через
+Enrollment "1" --> "0..1" Certificate
+
+Admin "1" --> "0..*" Course : проверяет
+
+@enduml
