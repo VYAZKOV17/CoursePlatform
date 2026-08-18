@@ -1,0 +1,17 @@
+@startuml
+title "Диаграмма контекста"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(student, "Student", "Записывается на курсы и проходит обучение")
+Person(instructor, "Instructor", "Создаёт и ведёт курсы")
+Person(admin, "Admin", "Модерирует контент платформы")
+
+System(coursePlatform, "CoursePlatform", "Позволяет создавать курсы, записываться на них и отслеживать прогресс")
+
+System_Ext(NotificationService, "Notification Service", "Отправляет уведомления")
+
+Rel(student, coursePlatform, "Просматривает курсы, записывается, проходит обучение")
+Rel(instructor, coursePlatform, "Создаёт и публикует курсы")
+Rel(admin, coursePlatform, "Модерирует курсы")
+Rel(coursePlatform, NotificationService, "Отправляет уведомления")
+@enduml
