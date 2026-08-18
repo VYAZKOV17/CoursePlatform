@@ -42,13 +42,13 @@ CoursePlatform — платформа онлайн-курсов, на котор
 - `ASSUMPTIONS.md` — допущения и открытые архитектурные решения.
 - `docs/` — папка с документацией по этапам:
   - [01_UserStory](01_UserStory/01_UserStoris.md) — пользовательские истории.
-  - `02-use-case-diagram/` — диаграмма вариантов использования.
-  - `03-c4-architecture/` — C4-модель архитектуры.
-  - `04-class-diagram/` — диаграмма классов.
-  - `05-sequence-diagrams/` — диаграммы последовательности.
-  - `06-activity-state/` — диаграммы активностей и состояний.
-  - `07-data-model/` — модель данных (ER + SQL).
-  - `08-api/` — спецификация API (OpenAPI).
+  - [02_UseCase](02_UseCase/02_UseCase.puml) — диаграмма вариантов использования.
+  - [03_C4_Модель](03_C4) — C4-модель архитектуры.
+  - [04_ClassDiagram](04_ClassDiagram/ClassDiagram.puml) — диаграмма классов.
+  - [05_SequenceDiagrams](05_SequenceDiagrams)` — диаграммы последовательности.
+  - [06_ActivityDiagram and_StateDiagram](06_ActivityAndStateDiagram) — диаграммы активностей и состояний.
+  - [07_ERDiagram](07_ERDiagram/ER_Diagrama.puml) — модель данных (ER + SQL).
+  - [08_API](08_API/API.yaml) — спецификация API (OpenAPI).
 
 ## 7. Что демонстрирует проект (для рекрутера)
 -	Формализация требований: атомарные User Stories по INVEST с тестируемыми Acceptance Criteria (Given/When/Then), включая негативные сценарии
