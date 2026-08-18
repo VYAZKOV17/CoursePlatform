@@ -1,0 +1,30 @@
+@startuml
+title "Диаграмма послдовательности Записаться на курс"
+actor Student
+participant "Web App" as Web
+participant "Enrollment Component" as Enrollment
+participant "Course Management Component" as CourseMan
+database "Database" as Database
+
+Student -> Web : "Записаться на курс"
+Web -> Enrollment : POST/enrollments {courseId}
+
+Enrollment -> CourseMan : getCourseStatus(courseId)
+CourseMan -> Database : SELECT status FROM course where course_id = {courseId}
+Database --> CourseMan : status = published
+CourseMan --> Enrollment : status = published
+
+Enrollment -> Database: SELECT * FROM enrollments WHERE course_id={courseId} AND student_id={studentId}
+Database --> Enrollment: результат (найдено / не найдено)
+
+alt Enrollment не найден
+    Enrollment -> Database: INSERT INTO enrollments (status='active', course_id={courseId}, student_id={studentId})
+    Database --> Enrollment: enrollment создан
+    Enrollment --> Web: 201 Created
+    Web --> Student: "Вы записаны"
+else Enrollment уже существует
+    Enrollment --> Web: 409 Conflict
+    Web --> Student: "Вы уже записаны"
+end
+
+@enduml
