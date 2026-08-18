@@ -1,0 +1,25 @@
+@startuml
+title "Диаграмма контейнеров"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(student, "Student", "Записывается на курсы и проходит обучение")
+Person(instructor, "Instructor", "Создаёт и ведёт курсы")
+Person(admin, "Admin", "Модерирует контент платформы")
+
+System_Boundary(cp, "CoursePlatform") {
+
+    Container(web, "Web Application", "React", "UI для Student, Admin и Instructor")
+    ContainerDb(db, "Database", "PostgreSQL", "Хранит данные о курсах, Student и Instructor")
+    Container(api,"API application", "Node.js", "Обрабатывает бизнес логику")
+}
+
+System_Ext(notify, "Notification Service")
+
+Rel(student, web, "Использует", "HTTPS")
+Rel(instructor, web, "Использует", "HTTPS")
+Rel(admin, web, "Использует", "HTTPS")
+Rel(web, api, "Делает запросы", "JSON/HTTPS")
+Rel(api, db, "Читает/пишет", "SQL")
+Rel(api, notify, "Отправляет уведомления", "SMTP")
+
+@enduml
