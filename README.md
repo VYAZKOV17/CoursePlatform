@@ -20,23 +20,23 @@ CoursePlatform — платформа онлайн-курсов, на котор
 |Запись на курс|	Student|	Sequence: Enrollment|
 |Прохождение курса и получение сертификата|	Student|	Sequence: Certificate Issuance, State Machine|
 
-4. Архитектурный обзор
+## 4. Архитектурный обзор
 Архитектура описана по модели C4 на трёх уровнях — от общего контекста до внутренних компонентов API:
-·	Context — CoursePlatform как единая система, три актора (Student, Instructor, Admin), один внешний сервис — Notification Service (SMTP)
-·	Container — Web Application (React), API Application (Node.js), Database (PostgreSQL)
-·	Component — декомпозиция API Application: Auth, Course Management, Enrollment, Certificate
-Подробности и диаграммы — в docs/03-c4-architecture/.
-5. Технологии и инструменты
-Область	Технология
-Frontend (контейнер)	React
-Backend (контейнер)	Node.js / REST
-База данных	PostgreSQL
-Внешняя интеграция	Notification Service (SMTP)
-Диаграммы	PlantUML (C4-PlantUML для архитектуры)
-API-контракт	OpenAPI 3.0.3 (YAML)
+·	**Context** — CoursePlatform как единая система, три актора (Student, Instructor, Admin), один внешний сервис — Notification Service (SMTP)
+·	**Container** — Web Application (React), API Application (Node.js), Database (PostgreSQL)
+·	**Component** — декомпозиция API Application: Auth, Course Management, Enrollment, Certificate
 
-6. Структура репозитория
-coursePlatform-lite-portfolio/
+## 5. Технологии и инструменты
+|Область|	Технология|
+| ------------- | ------------- |
+|Frontend (контейнер)|	React|
+|Backend (контейнер)|	Node.js / REST|
+|База данных|	PostgreSQL|
+|Внешняя интеграция|	Notification Service (SMTP)|
+|Диаграммы|	PlantUML (C4-PlantUML для архитектуры)|
+|API-контракт|	OpenAPI 3.0.3 (YAML)|
+
+## 6. Структура репозитория
 ├── README.md                      — этот файл
 ├── ASSUMPTIONS.md                 — все допущения и открытые решения проекта
 ├── docs/
@@ -49,19 +49,19 @@ coursePlatform-lite-portfolio/
 │   ├── 06-activity-state/         — Этап 6
 │   ├── 07-data-model/             — Этап 7 (ER + SQL-миграции)
 │   └── 08-api/                    — Этап 8 (OpenAPI)
-└── infra/
-    └── docker-compose.yml         — локальный PostgreSQL для проверки миграций
 
-7. Навигация по этапам
-#	Этап	Файлы
-1	User Stories + Acceptance Criteria	docs/01-user-stories/user-stories.md
-2	Use Case Diagram	docs/02-use-case-diagram/
-3	C4: Context / Container / Component	docs/03-c4-architecture/
-4	Class Diagram (доменная модель)	docs/04-class-diagram/class-diagram.puml
-5	Sequence Diagrams	docs/05-sequence-diagrams/
-6	Activity Diagram + State Machine	docs/06-activity-state/
-7	ER-диаграмма + SQL-миграции	docs/07-data-model/
-8	OpenAPI-спецификация	docs/08-api/openapi.yaml
+
+## 7. Навигация по этапам
+|#|	Этап|	Файлы|
+|-|-----|--------|
+|1|	User Stories + Acceptance Criteria|	docs/01-user-stories/user-stories.md|
+|2|	Use Case Diagram|	docs/02-use-case-diagram/|
+|3|	C4: Context / Container / Component|	docs/03-c4-architecture/|
+|4|	Class Diagram (доменная модель)|	docs/04-class-diagram/class-diagram.puml|
+|5|	Sequence Diagrams|	docs/05-sequence-diagrams/|
+|6|	Activity Diagram + State Machine|	docs/06-activity-state/|
+|7|	ER-диаграмма + SQL-миграции|	docs/07-data-model/|
+|8| OpenAPI-спецификация|	docs/08-api/openapi.yaml|
 
 Единый глоссарий терминов и сверка согласованности — docs/00-glossary.md.
 8. Как посмотреть диаграммы
