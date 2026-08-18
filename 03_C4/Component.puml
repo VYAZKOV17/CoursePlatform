@@ -1,0 +1,30 @@
+@startuml
+title "CoursePlatform Lite — C4 Component Diagram (API Application)"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(web, "Web Application", "React", "UI")
+ContainerDb(db, "Database", "PostgreSQL", "Хранит данные")
+System_Ext(notify, "Notification Service", "Отправка email")
+
+Container_Boundary(api, "API Application") {
+  Component(auth, "Auth Component", "OAuth 2.0 / OIDC", "Аутентификация и авторизация пользователей")
+  Component(course, "Course Management Component", "Node.js", "CRUD курсов, модерация, публикация")
+  Component(enrollment, "Enrollment Component", "Node.js", "Запись студентов на курсы, проверка дублей, прогресс")
+  Component(certificate, "Certificate Component", "Node.js", "Генерация сертификата при завершении курса")
+}
+
+Rel(web, auth, "Логин/регистрация", "JSON/HTTPS")
+Rel(web, course, "CRUD курсов", "JSON/HTTPS")
+Rel(web, enrollment, "Запись на курс, прогресс", "JSON/HTTPS")
+Rel(web, certificate, "Запрос сертификата", "JSON/HTTPS")
+
+Rel(certificate, enrollment, "Проверяет прогресс = 100%", "внутренний вызов")
+Rel(enrollment, course, "Проверяет статус курса = published", "внутренний вызов")
+Rel(certificate, notify, "Отправляет уведомление о выдаче", "SMTP")
+
+Rel(auth, db, "Читает/пишет users", "SQL")
+Rel(course, db, "Читает/пишет courses, modules, lessons", "SQL")
+Rel(enrollment, db, "Читает/пишет enrollments", "SQL")
+Rel(certificate, db, "Читает/пишет certificates", "SQL")
+
+@enduml
