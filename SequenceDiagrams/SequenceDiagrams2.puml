@@ -1,0 +1,39 @@
+@startuml
+
+title "Диаграмма послдовательности Запрос сертификата"
+actor Student
+participant "Web App" as Web
+participant "Certificate Component" as Certificate
+participant "Enrollment Component" as Enrollment
+participant "Notification Service" as Notify
+database "Database" as Database
+
+Student -> Web : "Запросить сертификат"
+Web -> Certificate : POST /enrollments/{enrollmentId}/certificate
+Certificate -> Enrollment : getProgress(enrollmentId)
+Enrollment -> Database : SELECT progress_percent, status FROM enrollments WHERE id = {enrollmentId}
+Database --> Enrollment : progressPercent = 100
+Enrollment --> Certificate : progressPercent = 100
+
+alt progressPercent == 100
+    Certificate -> Database: SELECT * FROM certificates WHERE enrollment_id = {enrollmentId}
+    Database --> Certificate: результат (найден / не найден)
+
+    alt сертификат ещё не выдан
+        Certificate -> Database: INSERT INTO certificates (enrollment_id, issued_at)
+        Database --> Certificate: certificate создан
+        Certificate -> Notify: sendCertificateIssuedEmail(studentEmail, certificateId)
+        Notify --> Certificate: ack
+        Certificate --> Web: 201 Created {certificateId}
+        Web --> Student: "Сертификат выдан, доступен для скачивания"
+    else сертификат уже выдан ранее
+        Certificate --> Web: 200 OK {existingCertificateId}
+        Web --> Student: "Сертификат уже был выдан ранее"
+    end
+
+else progressPercent < 100
+    Certificate --> Web: 400 Bad Request "Курс не завершён"
+    Web --> Student: "Курс не завершён (пройдено {progressPercent}%)"
+end
+
+@enduml
